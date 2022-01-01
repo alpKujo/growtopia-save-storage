@@ -70,45 +70,52 @@ namespace SaveDatStore
             string destPath = SaveDatStore.Properties.Settings.Default.storageLoc;
             string growID = SaveDatStore.Properties.Settings.Default.growID;
 
-            DirectoryInfo storage = new DirectoryInfo(destPath);
-            FileInfo[] DATFiles = storage.GetFiles("*.dat");
-
-            if (DATFiles.Length == 0)
+            if (string.IsNullOrEmpty(growID))
             {
-                MessageBox.Show("The storage is currently empty.", "Empty Storage");
+                MessageBox.Show("You have to activate a save.dat before swapping!");
             }
             else
             {
-                if (string.IsNullOrEmpty(txtGrowIDget.Text))
+                DirectoryInfo storage = new DirectoryInfo(destPath);
+                FileInfo[] DATFiles = storage.GetFiles("*.dat");
+
+                if (DATFiles.Length == 0)
                 {
-                    MessageBox.Show("You have to enter a GrowID!", "Activate Error");
+                    MessageBox.Show("The storage is currently empty.", "Empty Storage");
                 }
                 else
                 {
-                    if (File.Exists(destPath + "\\" + txtGrowIDget.Text + ".dat"))
+                    if (string.IsNullOrEmpty(txtGrowIDget.Text))
                     {
-                        if (File.Exists(growPath + "\\save.dat"))
-                        {
-                            File.Copy(growPath + "\\save.dat", destPath + "\\" + growID + ".dat");
-                            File.Delete(growPath + "\\save.dat");
-
-                            SaveDatStore.Properties.Settings.Default.growID = txtGrowIDget.Text;
-                            SaveDatStore.Properties.Settings.Default.Save();
-
-                            File.Copy(destPath + "\\" + txtGrowIDget.Text + ".dat", growPath + "\\save.dat");
-                            File.Delete(destPath + "\\" + txtGrowIDget.Text + ".dat");
-                            MessageBox.Show(txtGrowIDget.Text + " and " + growID + " successfully swapped!", "Swap");
-                        }
-                        else
-                        {
-                            MessageBox.Show("There is no save.dat to be swapped with!");
-                        }                        
+                        MessageBox.Show("You have to enter a GrowID!", "Activate Error");
                     }
                     else
                     {
-                        MessageBox.Show("There is no save with the name " + txtGrowIDget.Text + ".dat!");
-                    }                    
-                }               
+                        if (File.Exists(destPath + "\\" + txtGrowIDget.Text + ".dat"))
+                        {
+                            if (File.Exists(growPath + "\\save.dat"))
+                            {
+                                File.Copy(growPath + "\\save.dat", destPath + "\\" + growID + ".dat");
+                                File.Delete(growPath + "\\save.dat");
+
+                                SaveDatStore.Properties.Settings.Default.growID = txtGrowIDget.Text;
+                                SaveDatStore.Properties.Settings.Default.Save();
+
+                                File.Copy(destPath + "\\" + txtGrowIDget.Text + ".dat", growPath + "\\save.dat");
+                                File.Delete(destPath + "\\" + txtGrowIDget.Text + ".dat");
+                                MessageBox.Show(txtGrowIDget.Text + " and " + growID + " successfully swapped!", "Swap");
+                            }
+                            else
+                            {
+                                MessageBox.Show("There is no save.dat to be swapped with!");
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("There is no save with the name " + txtGrowIDget.Text + ".dat!");
+                        }
+                    }
+                }
             }
         }
     }
